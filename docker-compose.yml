@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    env_file:
+      - ./core/.env
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_SECRET_KEY: "dev-only-change-me"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+      DATABASE_URL: "postgres://app:app@db:5432/app"
+      COPILOT_ENABLED: "1"
+    volumes:
+      - ./core:/app/core
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py seed_plans &&
+             python manage.py runserver 0.0.0.0:8000"
+    working_dir: /app/core
+
+volumes:
+  postgres_data:

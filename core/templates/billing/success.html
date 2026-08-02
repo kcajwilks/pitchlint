@@ -1,0 +1,14 @@
+{% extends "_base_app.html" %}
+
+{% block title %}Checkout successful | {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <div class="alert alert-success mb-3" role="alert">
+      Your checkout completed successfully. Subscription details will sync after Stripe webhook processing.
+    </div>
+    <a href="{% url 'settings:billing' %}" class="btn btn-primary btn-sm">Back to billing settings</a>
+  </div>
+</div>
+{% endblock %}

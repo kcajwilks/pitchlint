@@ -1,0 +1,42 @@
+{% extends "_base_app.html" %}
+
+{% block title %}Workspace | {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h4 fw-semibold mb-1">Workspace</h1>
+    <p class="text-body-secondary mb-0">Projects are a simple scaffold—swap this for your product domain whenever you’re ready.</p>
+  </div>
+  <a class="btn btn-primary" href="{% url 'workspace:project_create' %}">
+    <i class="bi bi-plus-lg me-1"></i>New project
+  </a>
+</div>
+
+{% if projects %}
+<div class="card">
+  <div class="list-group list-group-flush">
+    {% for project in projects %}
+    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{% url 'workspace:project_detail' project.pk %}">
+      <div class="me-3">
+        <div class="fw-semibold">{{ project.name }}</div>
+        {% if project.description %}
+        <div class="small text-body-secondary text-truncate" style="max-width: 64ch;">{{ project.description }}</div>
+        {% else %}
+        <div class="small text-body-secondary">No description</div>
+        {% endif %}
+      </div>
+      <span class="badge text-bg-light border">Updated {{ project.updated_at|date:"M j, Y" }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="card">
+  <div class="card-body">
+    <p class="mb-2">No projects yet.</p>
+    <a class="btn btn-outline-primary" href="{% url 'workspace:project_create' %}">Create your first project</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

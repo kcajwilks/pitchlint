@@ -1,0 +1,80 @@
+{% extends "_base_app.html" %}
+
+{% block title %}Billing | {{ SITE_NAME }}{% endblock %}
+{% block app_page_title %}Billing{% endblock %}
+
+{% block content %}
+{% if not billing_enabled %}
+<div class="alert alert-warning" role="alert">
+  <strong>Billing is not configured.</strong>
+  <div class="small mt-1">
+    Missing environment variables:
+    <code>{% for key in missing_stripe_env_vars %}{{ key }}{% if not forloop.last %}, {% endif %}{% endfor %}</code>
+  </div>
+</div>
+{% endif %}
+
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h6 mb-0">Current subscription</h2>
+      {% if billing_enabled %}
+        {% if user.is_staff or user.is_superuser %}
+        <form method="post" action="{% url 'billing:sync' %}" class="mb-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-secondary btn-sm">Sync now</button>
+        </form>
+        {% endif %}
+      {% endif %}
+    </div>
+    {% if subscription.plan %}
+    <p class="mb-1"><strong>{{ subscription.plan.name }}</strong></p>
+    <p class="small text-body-secondary mb-3">Status: {{ subscription.status }}</p>
+    <form method="post" action="{% url 'billing:portal' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-secondary btn-sm" {% if not billing_enabled %}disabled{% endif %}>Manage in Stripe portal</button>
+    </form>
+    {% else %}
+    <p class="mb-0 text-body-secondary">You are currently on the free tier.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h2 class="h6 mb-3">Available plans</h2>
+    <div class="btn-group mb-3" role="group" data-pricing-toggle>
+      <button type="button" class="btn btn-primary js-pricing-interval active" data-interval="monthly">Monthly</button>
+      <button type="button" class="btn btn-outline-secondary js-pricing-interval" data-interval="yearly">Yearly</button>
+    </div>
+    <div class="row g-3">
+      {% for plan in plans %}
+      <div class="col-md-4">
+        <div class="border rounded-3 p-3 h-100 plan-card {% if plan.highlighted %}highlighted{% endif %}">
+          <h3 class="h6 mb-1">{{ plan.name }}</h3>
+          <p class="small text-body-secondary mb-3">{{ plan.tagline|default:"Configure per-tier copy" }}</p>
+          {% if not plan.is_free %}
+          {% widthratio plan.monthly_amount_cents|default:0 100 1 as monthly_dollars %}
+          {% widthratio plan.yearly_amount_cents|default:0 100 1 as yearly_dollars %}
+          <div class="d-flex align-items-end gap-1 mb-3">
+            <div class="h4 mb-0 js-plan-amount" data-amount-monthly="${{ monthly_dollars }}" data-amount-yearly="${{ yearly_dollars }}">${{ monthly_dollars }}</div>
+            <div class="small text-body-secondary mb-1">/mo</div>
+          </div>
+          {% endif %}
+          <form method="post" action="{% url 'billing:checkout' %}">
+            {% csrf_token %}
+            <input type="hidden" name="plan_code" value="{{ plan.code }}">
+            <input type="hidden" class="js-plan-interval" name="interval" value="monthly">
+            <button type="submit" class="btn btn-primary btn-sm w-100" {% if not billing_enabled or plan.is_free %}disabled{% endif %}>
+              {% if plan.is_free %}Current free tier{% else %}Choose {{ plan.name }}{% endif %}
+            </button>
+          </form>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-body-secondary">No plans are configured yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

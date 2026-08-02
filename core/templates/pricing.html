@@ -1,0 +1,70 @@
+{% extends "_base_marketing.html" %}
+
+{% block title %}Pricing | {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<section class="text-center mb-5">
+  <h1 class="display-6 fw-semibold mb-2">Simple pricing for every stage</h1>
+  <p class="text-body-secondary mb-4">Start free, then upgrade when your product usage grows.</p>
+  <div class="btn-group" data-pricing-toggle role="group" aria-label="Billing interval">
+    <button type="button" class="btn btn-primary js-pricing-interval active" data-interval="monthly">Monthly</button>
+    <button type="button" class="btn btn-outline-secondary js-pricing-interval" data-interval="yearly">Yearly</button>
+  </div>
+</section>
+
+<section class="row g-4">
+  {% for plan in plans %}
+  <div class="col-lg-4">
+    <div class="card h-100 plan-card {% if plan.highlighted %}highlighted{% endif %}">
+      <div class="card-body d-flex flex-column">
+        {% if plan.highlighted %}
+        <span class="badge bg-primary-subtle text-primary align-self-start mb-2">Most popular</span>
+        {% endif %}
+        <h2 class="h5 mb-1">{{ plan.name }}</h2>
+        <p class="text-body-secondary mb-3">{{ plan.tagline|default:"Great for getting started." }}</p>
+
+        {% if plan.is_free %}
+        <div class="d-flex align-items-end mb-3">
+          <div class="price-amount">Free</div>
+        </div>
+        {% else %}
+        {% widthratio plan.monthly_amount_cents|default:0 100 1 as monthly_dollars %}
+        {% widthratio plan.yearly_amount_cents|default:0 100 1 as yearly_dollars %}
+        <div class="d-flex align-items-end gap-1 mb-3">
+          <div
+            class="price-amount js-plan-amount"
+            data-amount-monthly="${{ monthly_dollars }}"
+            data-amount-yearly="${{ yearly_dollars }}"
+          >${{ monthly_dollars }}</div>
+          <div class="text-body-secondary mb-1">/mo</div>
+        </div>
+        {% endif %}
+
+        <ul class="small text-body-secondary ps-3 mb-4">
+          {% for feature in plan.features %}
+          <li class="mb-2">{{ feature }}</li>
+          {% empty %}
+          <li>Customise feature bullets for your product.</li>
+          {% endfor %}
+        </ul>
+
+        <div class="mt-auto">
+          {% if user.is_authenticated and not plan.is_free %}
+          <form method="post" action="{% url 'billing:checkout' %}">
+            {% csrf_token %}
+            <input type="hidden" name="plan_code" value="{{ plan.code }}">
+            <input type="hidden" class="js-plan-interval" name="interval" value="monthly">
+            <button type="submit" class="btn {% if plan.highlighted %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">Choose {{ plan.name }}</button>
+          </form>
+          {% elif not user.is_authenticated and not plan.is_free %}
+          <a href="{% url 'account_signup' %}" class="btn {% if plan.highlighted %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">Get started</a>
+          {% else %}
+          <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary w-100">Create free account</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

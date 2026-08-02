@@ -1,0 +1,24 @@
+{% extends "settings/_layout.html" %}
+
+{% block title %}Profile settings | {{ SITE_NAME }}{% endblock %}
+
+{% block settings_content %}
+<div class="card">
+  <div class="card-body">
+    <h2 class="h6 mb-3">Profile</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Username</label>
+        <input class="form-control" value="{{ user.username }}" readonly>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input class="form-control" value="{{ user.email }}" readonly>
+      </div>
+    </div>
+    <div class="alert alert-secondary mt-3 mb-0 small" role="alert">
+      Profile editing can be extended by adding a custom user profile model.
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+Django>=4.2
+django-allauth
+PyJWT
+cryptography
+stripe
+python-dotenv
+dj-database-url
+psycopg[binary]
+gunicorn
+whitenoise
+agno
+openai

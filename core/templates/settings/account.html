@@ -1,0 +1,38 @@
+{% extends "settings/_layout.html" %}
+
+{% block title %}Account settings | {{ SITE_NAME }}{% endblock %}
+
+{% block settings_content %}
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h6">Security</h2>
+        <p class="small text-body-secondary">Update password and connected identity providers.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'account_change_password' %}" class="btn btn-outline-secondary btn-sm">Change password</a>
+          <a href="{% url 'socialaccount_connections' %}" class="btn btn-outline-secondary btn-sm">Connected accounts</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h2 class="h6">Email</h2>
+        <p class="small text-body-secondary">Manage your account email addresses.</p>
+        <a href="{% url 'account_email' %}" class="btn btn-outline-secondary btn-sm">Manage email</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card border-danger">
+      <div class="card-body">
+        <h2 class="h6 text-danger">Danger zone</h2>
+        <p class="small text-body-secondary mb-3">Delete your account and all associated data permanently.</p>
+        <a href="{% url 'settings:delete_account' %}" class="btn btn-danger btn-sm">Delete account</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

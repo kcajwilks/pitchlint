@@ -1,0 +1,12 @@
+{% extends "_base_app.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap gap-2 mb-3">
+  <a class="btn btn-sm btn-outline-primary" href="{% url 'copilot:demo_inline' %}">Inline</a>
+  <a class="btn btn-sm btn-outline-primary" href="{% url 'copilot:demo_sidebar' %}">Sidebar</a>
+  <a class="btn btn-sm btn-outline-primary" href="{% url 'copilot:demo_popup' %}">Popup</a>
+</div>
+
+{% block copilot_demo_content %}{% endblock %}
+{% endblock %}
+
