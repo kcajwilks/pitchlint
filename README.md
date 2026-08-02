@@ -15,6 +15,23 @@ A Django starter for building AI SaaS products with:
 
 A virtual environment is recommended.
 
+## Start a new project from this starter
+
+Create an empty GitHub repo for your app first (example: `my-saas-app`), then clone this starter and retarget the remote:
+
+```bash
+git clone git@github.com:kcajwilks/django-cookiecutter.git my-saas-app
+cd my-saas-app
+git remote remove origin
+git remote add origin git@github.com:kcajwilks/my-saas-app.git
+git branch -M main
+git push -u origin main
+```
+
+Replace `my-saas-app` (directory and remote) with your project name. Do not copy `core/.env` from another machine — use `cp core/.env.example core/.env` and fill in new secrets.
+
+Then continue with Quick start or Docker below.
+
 ## Quick start
 
 From the repo root:
