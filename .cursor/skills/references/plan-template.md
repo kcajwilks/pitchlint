@@ -1,6 +1,6 @@
 # Feature plan template (docs-plans mapping)
 
-Use this shape for every greenfield SaaS element plan under `docs/plans/<slug>.md`. Follow the vendored `docs-plans` skill for frontmatter, `PLANS.md`, and status lifecycle.
+Pack: [pack.md](pack.md). Use this shape for every greenfield SaaS element plan under `docs/plans/<slug>.md`. Follow the vendored `docs-plans` skill for frontmatter, `PLANS.md`, and status lifecycle. Inventory: `django-saas-starter`.
 
 ```markdown
 ---

@@ -9,11 +9,13 @@ description: >
 
 # New SaaS App
 
-Single entry path for greenfield ASAP. Keep using `/plan-saas-from-starter` or `/design-with-hallmark` alone when re-entering mid-project.
+**Stack:** Django + DRF + Vite + React. Never FastAPI or Next.js.
+
+Single entry path for greenfield ASAP. Pack: [`.cursor/skills/references/pack.md`](../references/pack.md). Keep using `/plan-saas-from-starter` or `/design-with-hallmark` alone when re-entering mid-project.
 
 ## Mode
 
-**Agent mode only** (must write `docs/plans/` and templates).
+**Agent mode only** (must write `docs/plans/`).
 
 ## Sequence
 
@@ -22,13 +24,14 @@ Single entry path for greenfield ASAP. Keep using `/plan-saas-from-starter` or `
 3. Run the full `/plan-saas-from-starter` workflow (read that skill and follow it). Ensure a **design** plan element is emitted.
 4. **Stop for human approval.** List plan files and tell the user to approve in `docs/plans/` / `PLANS.md`. Do not self-approve. Do not implement domain or design yet.
 5. When the user confirms plans are **Approved**, run `/design-with-hallmark` (read that skill).
-6. Handoff: list remaining approved domain plans and recommend implementing them next (one plan at a time). Point at `django-saas-starter` / `starter-map.md` for paths.
+6. Handoff: list remaining approved domain plans and recommend implementing them next (one plan at a time). Point at `django-saas-starter` / `starter-map.md` for paths. AI/chat work: `.cursor/skills/copilotkit-agno/`.
 
 ## Rules
 
-- Never skip the approval gate between plan and design/implement.
+- Follow [pack.md](../references/pack.md). Never skip the approval gate between plan and design/implement.
 - Do not invent a parallel plan format — vendored `docs-plans` only.
-- Design scope = marketing + light shell theming (`ui-surface-map.md`).
+- Design scope = marketing + light shell theming ([ui-surface-map.md](../references/ui-surface-map.md)). Do not invoke Hallmark except via `/design-with-hallmark`.
+- After design, implement domain via `django-saas-starter`; AI via `copilotkit-agno`.
 
 ## Done criteria (kickoff)
 
@@ -36,3 +39,7 @@ Single entry path for greenfield ASAP. Keep using `/plan-saas-from-starter` or `
 - Plans written at least through Pending Review (and Approved before design)
 - Design pass complete after approval
 - Clear next implementation targets listed
+
+## Related
+
+[pack.md](../references/pack.md) · [`plan-saas-from-starter`](../plan-saas-from-starter/SKILL.md) · [`design-with-hallmark`](../design-with-hallmark/SKILL.md) · [`django-saas-starter`](../django-saas-starter/SKILL.md) · [`copilotkit-agno`](../copilotkit-agno/SKILL.md) · [`docs-plans`](../docs-plans/SKILL.md)

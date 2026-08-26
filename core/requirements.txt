@@ -1,5 +1,6 @@
 Django>=4.2
 django-allauth
+djangorestframework
 PyJWT
 cryptography
 stripe

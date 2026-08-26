@@ -7,9 +7,8 @@ This folder contains practical, step-by-step setup guides for this Django SaaS s
 - **Getting started (local)**: [`getting-started.md`](./getting-started.md)
 - **Stripe billing setup**: [`stripe.md`](./stripe.md)
 - **CopilotKit + Agno**: [`copilotkit.md`](./copilotkit.md)
-- **CopilotKit + Agno (bolt-on, standard)**: [`copilotkit-bolton.md`](./copilotkit-bolton.md)
 - **Deploy on Render**: [`deploy-render.md`](./deploy-render.md)
-- **Work plans**: [`plans/PLANS.md`](./plans/PLANS.md) (Agent mode: `/new-saas-app` or `/plan-saas-from-starter` → approve → `/design-with-hallmark`; pack in `.cursor/skills/`)
+- **Work plans**: [`plans/PLANS.md`](./plans/PLANS.md) — follow [pack.md](../.cursor/skills/references/pack.md) (`/new-saas-app` or `/plan-saas-from-starter` → human **Approved** → `/design-with-hallmark`)
 
 ## Useful project links
 

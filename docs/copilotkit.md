@@ -1,21 +1,16 @@
-# CopilotKit + Agno (Django integration)
+# CopilotKit + Agno (Django + React SPA)
 
-This starter can embed a CopilotKit React UI inside Django templates and connect it to an Agno-powered agent via a Django “runtime” endpoint.
+In-app product chat wired to a Django AG-UI runtime and an Agno agent with workspace tools.
 
 ## What you get
 
-- A React chat UI embedded on the Workspace project page
-- A Django runtime at `/copilot/*` that CopilotKit can talk to
-- Agno agent implementation in `core/copilot/ai.py`
-- Optional persistence in Django DB via `copilot` models
+- `CopilotSidebar` on authenticated app routes when Copilot is enabled (lazy-loaded)
+- Django REST runtime at `/copilot/*` (SSE / AG-UI)
+- Agno agent that can list/create/update projects and generate AI briefs
+- Route context (`pathname`, `projectId`) injected into each run
+- Thread persistence via `copilot` models
 
-## Prerequisites
-
-- Node.js 20+
-- Python 3.9+
-- `OPENAI_API_KEY` set
-
-## Enable Copilot
+## Enable
 
 In `core/.env`:
 
@@ -25,81 +20,26 @@ OPENAI_API_KEY="..."
 AGNO_MODEL_ID="gpt-4o"
 ```
 
-## Install frontend dependencies
+Restart Django after changing `.env`. Sign in, then open Dashboard or Workspace.
 
-From the repo root:
+The SPA reads `copilot_enabled` from `/api/config/` (no Vite flag required). CopilotKit is not downloaded until that flag is true.
 
-```bash
-cd frontend
-npm install
-```
+## Run
 
-## Build the embedded frontend bundle
-
-This starter builds the Copilot UI into Django static assets:
-
-- output: `core/static/frontend/`
-- entry: `core/static/frontend/copilot.js`
-
-Build once:
-
-```bash
-cd frontend
-npm run build
-```
-
-Watch mode (rebuild on changes):
-
-```bash
-cd frontend
-npm run dev
-```
-
-## Docker
-
-Docker Compose loads `core/.env` and builds the frontend bundle during the image build (see `Dockerfile`).
-
-```bash
-docker compose up --build
-```
-
-Ensure `core/.env` includes:
-
-```env
-COPILOT_ENABLED="1"
-OPENAI_API_KEY="..."
-```
-
-
-From the repo root:
-
-```bash
-cd core
-python manage.py migrate
-python manage.py runserver
-```
-
-Then open a Workspace project and use the embedded Copilot panel.
+Use Vite for UI work (`cd frontend && npm run dev` → http://127.0.0.1:5173/), with Django on http://127.0.0.1:8000/.
 
 ## Runtime endpoints
 
-CopilotKit discovers and runs the agent via:
+- `GET /copilot/info` (also `GET`/`POST /copilot` for CopilotKit transport detect)
+- `POST /copilot/agent/default/run` (SSE)
+- `POST /copilot/agent/default/stop/<thread_id>`
+- `POST /copilot/reset`
 
-- `GET /copilot/info`
-- `POST /copilot/agent/default/run` (SSE / AG-UI events)
+Auth: session cookie (`credentials="include"`) + `X-CSRFToken`. Unauthenticated calls return JSON `401` (not HTML).
 
-The integration uses cookie auth (`credentials="include"`) and sends `X-CSRFToken` from the browser’s `csrftoken` cookie.
+## Files
 
-## Files to know
-
-- Backend:
-  - `core/copilot/ai.py`
-  - `core/copilot/views.py`
-  - `core/copilot/models.py`
-  - `core/copilot/urls.py`
-- Frontend:
-  - `frontend/src/copilot.tsx`
-  - `frontend/vite.config.ts`
-- Template partial:
-  - `core/templates/_partials/_copilot.html`
-
+- Backend: `core/copilot/ai.py`, `tools.py`, `views.py`, `auth.py`, `models.py`
+- Frontend: `frontend/src/components/AppCopilot.tsx` (gate) + `CopilotHost.tsx` (CopilotKit UI)
+- Agent skill (clones): [`.cursor/skills/copilotkit-agno/`](../.cursor/skills/copilotkit-agno/SKILL.md) (pack: [pack.md](../.cursor/skills/references/pack.md))
+- Docs: [CopilotKit v2](https://docs.copilotkit.ai/reference/v2) · [Agno](https://docs.agno.com/)

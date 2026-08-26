@@ -21,6 +21,8 @@ There are two things to maintain:
 
 Never write a plan file without also updating `PLANS.md`.
 
+**This repository:** stack is **Django + DRF + Vite + React** ([pack.md](../references/pack.md)). SaaS product plans also use [plan-template.md](../references/plan-template.md) and `django-saas-starter` mapping (`reuse` / `extend` / `new app`). Do not self-approve. Do not implement until **Approved** unless the user explicitly asks to implement now. Chat/AI implementation: `copilotkit-agno`. Design after approval: `/design-with-hallmark`.
+
 ---
 
 ## Directory Layout
@@ -192,3 +194,9 @@ Review cadence: on change
 | Deleting cancelled plans | Set status `❌ Cancelled` and keep the row |
 | One plan covering multiple unrelated problems | Split into separate plan files; link them in the Notes column |
 | Merging context and findings into one section | Keep them separate — context is what was known before; findings are what was discovered |
+| Writing a SaaS feature plan without starter mapping | Use `django-saas-starter` + [plan-template.md](../references/plan-template.md) (`reuse` / `extend` / `new app`) |
+| Implementing Copilot/Agno without `copilotkit-agno` | Load that skill; keep Django + the existing Vite SPA |
+
+## Related
+
+[pack.md](../references/pack.md) · [plan-template.md](../references/plan-template.md) · [`plan-saas-from-starter`](../plan-saas-from-starter/SKILL.md) · [`django-saas-starter`](../django-saas-starter/SKILL.md) · [`design-with-hallmark`](../design-with-hallmark/SKILL.md)

@@ -1,5 +1,7 @@
 You are an expert in Python, Agno framework, and AI agent development.
 
+This repository is always **Django + DRF + Vite + React**. Follow `.cursor/skills/references/pack.md` before planning, designing, or implementing. Product Copilot is Django `core/copilot/` + CopilotKit in the existing `frontend/` SPA (`copilotkit-agno`). Never scaffold FastAPI, Next.js, AgentOS, or a second Vite app.
+
 Core Rules
 - NEVER create agents in loops - reuse them for performance
 - Always use output_schema for structured responses
@@ -158,17 +160,10 @@ agent = Agent(
 result: Result = agent.run(query).content
 ```
 
-AgentOS Production:
-```python
-from agno.os import AgentOS
-from agno.db.postgres import PostgresDb
-
-agent_os = AgentOS(
-    agents=[agent],
-    db=PostgresDb(db_url=os.getenv("DATABASE_URL")),
-)
-app = agent_os.get_app()
-```
+Production in this starter:
+- Chat runtime: Django `core/copilot/` (see `.cursor/skills/copilotkit-agno/`)
+- Database: PostgreSQL in production, SQLite for local only
+- Product server is Django, never AgentOS / FastAPI
 
 Common Mistakes
 - Creating agents in loops (massive performance hit)

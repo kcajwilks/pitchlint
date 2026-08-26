@@ -1,10 +1,12 @@
 ---
 name: hallmark
-description: "Anti-AI-slop design skill for greenfield pages, audits, redesigns, and design extraction from URLs or screenshots. Use when the user asks to build a new app or landing page, wants to redesign something, invokes Hallmark by name, or uses audit/redesign/study."
+description: "Anti-AI-slop design skill for audits, redesigns, and design extraction from URLs or screenshots. In this cookiecutter, run only via design-with-hallmark after approved plans — not as greenfield kickoff (use /new-saas-app). Use when the user invokes Hallmark by name or uses audit/redesign/study."
 version: 1.1.0
 ---
 
 # Hallmark
+
+**This cookiecutter:** do not treat Hallmark as the greenfield path. Follow [pack.md](../references/pack.md) and [design-with-hallmark](../design-with-hallmark/SKILL.md). Scope: [ui-surface-map.md](../references/ui-surface-map.md) and [THIS-REPO.md](THIS-REPO.md).
 
 A design skill for AI coding assistants. Makes the UIs they generate look made, not generated.
 

@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'api',
     'billing',
     'dashboard',
     'workspace',
@@ -133,12 +135,32 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-SITE_NAME = os.getenv("SITE_NAME", "Acme AI")
+SITE_NAME = os.getenv("SITE_NAME", "SaaS Starter")
 COPILOT_ENABLED = _env_bool("COPILOT_ENABLED", False)
 
-LOGIN_REDIRECT_URL = 'dashboard:home'
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_URL = 'account_login'
+LOGIN_REDIRECT_URL = "/dashboard"
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = "/login"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.getenv(
+        "DJANGO_CSRF_TRUSTED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000,http://127.0.0.1:8000",
+    ).split(",")
+    if o.strip()
+]
+
+CSRF_FAILURE_VIEW = "core.csrf.csrf_failure"
 
 # Development-friendly email backend to avoid SMTP connection errors
 # when no local mail server is running.

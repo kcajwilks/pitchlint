@@ -1,17 +1,19 @@
 # Django SaaS Starter (AI-ready shell)
 
-A Django starter for building AI SaaS products with:
+A Django + React starter for building AI SaaS products with:
 
-- modern Bootstrap 5.3 UI (Stripe-style light + dark theme)
-- django-allauth authentication (email/password + Google)
-- dashboard app shell (collapsible sidebar + top bar)
-- settings IA (`/settings/profile`, `/settings/account`, `/settings/billing`)
-- Stripe billing integration (checkout, portal, webhook)
+- Vite + React SPA (`frontend/`) styled with Hallmark tokens (no Bootstrap product UI)
+- Django REST Framework API under `/api/` (session auth + CSRF)
+- django-allauth (email/password + Google via `/accounts/`)
+- dashboard / workspace / settings in React
+- Stripe billing (API checkout/portal + webhook)
+- CopilotKit + Agno ready in the SPA
 
 ## Prerequisites
 
 - Python 3.9+
-- pip
+- Node.js 20+
+- pip / npm
 
 A virtual environment is recommended.
 
@@ -54,7 +56,7 @@ Optional before planning: Quick start / Docker below so the starter runs. Planni
 | **Mode** | **Agent** |
 | **Skill** | **`/new-saas-app`** (greenfield) |
 
-Paste your MVP brief into that chat (problem, user flow, MVP features, boundaries).
+Paste your MVP brief into that chat (problem, user flow, MVP features, boundaries). The agent must follow [pack.md](./.cursor/skills/references/pack.md) (plan → you approve → design → implement).
 
 Alternative (step-by-step): `/plan-saas-from-starter` only, then `/design-with-hallmark` after you approve plans.
 
@@ -77,24 +79,80 @@ Still in **Agent** in the new project:
 - Copy `core/.env` between apps
 - Skip approval and jump to coding
 - Ask Hallmark to redesign the whole authenticated shell (marketing + light shell tint only — see [ui-surface-map](./.cursor/skills/references/ui-surface-map.md))
+- Change the stack (it is always Django + Vite + React; never FastAPI, Next.js, or a second Copilot app)
 
 Then continue with Quick start or Docker below if you have not already.
 
 ## Quick start
 
-From the repo root:
+From the **repo root** (`django-cookiecutter/`), use two terminals. Do not paste the `# terminal …` comment lines into the shell.
+
+Terminal 1 — API:
 
 ```bash
+cd /path/to/django-cookiecutter   # if you are not already at repo root
+source venv/bin/activate            # or: python -m venv venv && source venv/bin/activate
 cd core
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py createsuperuser   # optional; needed to log in
+python manage.py seed_plans          # Free / Pro / Business catalog for Pricing
+python manage.py createsuperuser   # optional
 python manage.py runserver
 ```
 
-## Docker + Postgres (recommended dev setup)
+If you are **already inside `core/`** with `(venv)` active:
+
+```bash
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+If you see `Error: That port is already in use`, either stop the other process or use another port:
+
+```bash
+python manage.py runserver 8001
+```
+
+Terminal 2 — SPA (dev, proxies `/api`, `/accounts`, `/copilot` to Django):
+
+```bash
+cd /path/to/django-cookiecutter/frontend   # from repo root: cd frontend
+npm install
+npm run dev
+```
+
+If you are inside `core/`, go up first: `cd ../frontend`.
+
+Open **http://127.0.0.1:5173/** (Vite). API is on **http://127.0.0.1:8000/** (or `8001` if you changed it — then point the Vite proxy at that port or keep Django on 8000).
+
+Production-style (Django serves the built SPA from `core/static/spa/`):
+
+```bash
+cd frontend && npm run build
+cd ../core && python manage.py runserver
+```
+
+Open **http://127.0.0.1:8000/**
+
+### Smoke check
+
+With the API running:
+
+- http://127.0.0.1:8000/api/csrf/ — JSON CSRF token
+- http://127.0.0.1:8000/api/billing/plans/ — plan catalog
+- http://127.0.0.1:8000/ — SPA shell (after `npm run build`)
+
+In the SPA: sign up → Dashboard → Workspace (create a project) → Pricing / Settings → Billing.
+
+### Stack notes
+
+- Product UI is **React only** (Hallmark tokens in `frontend/src/tokens.css`); no Bootstrap product templates.
+- JSON API under **`/api/`** (session auth + CSRF). Stripe webhook stays at `/billing/webhook/`.
+- Copilot in the SPA: set `COPILOT_ENABLED=1` (and `OPENAI_API_KEY`). Sidebar appears on authenticated routes.
+- Next.js `ui/` was removed; do not reintroduce a second frontend.
+
+## Docker + Postgres (recommended full-stack build)
 
 From the repo root:
 
@@ -104,12 +162,14 @@ docker compose up --build
 
 Then open:
 
-- **Home**: http://127.0.0.1:8000/
+- **Home (SPA)**: http://127.0.0.1:8000/
+- **API**: http://127.0.0.1:8000/api/me/
 
 ## AI quickstart (Agno)
 
 1. Set `OPENAI_API_KEY` in `core/.env` (copy from `core/.env.example`).
-2. Create a project in **Workspace** and click **Generate AI brief**.
+2. Create a project in **Workspace** (SPA) and click **Generate AI brief**.
+3. Optional Copilot: `COPILOT_ENABLED=1` plus `OPENAI_API_KEY` (see [`docs/copilotkit.md`](./docs/copilotkit.md)).
 
 ## Environment variables (.env)
 
@@ -158,12 +218,13 @@ python3 manage.py seed_plans
 
 ## Project structure
 
-- **`core/`** — Project root; run `manage.py` from here. Contains the project package, apps, templates, and static files.
-- **`core/core/`** — Project config: `settings.py`, root `urls.py`, home view in `views.py`.
-- **`core/dashboard/`** — Dashboard and settings views for authenticated users.
-- **`core/billing/`** — Billing models, Stripe services, views, webhook handling, and `seed_plans` command.
-- **`core/templates/`** — Marketing and app shell templates, account/auth templates, settings pages.
-- **`core/static/`** — Theme CSS and small JS helpers (`theme.js`, `sidebar.js`, `pricing.js`).
+- **`frontend/`** — Vite + React SPA (dev server + production build to `core/static/spa/`).
+- **`core/`** — Django project; run `manage.py` from here.
+- **`core/api/`** — Auth + billing JSON endpoints and API URLConf.
+- **`core/workspace/`** — Sample `Project` domain + DRF viewset.
+- **`core/billing/`** — Stripe models, services, webhook.
+- **`core/copilot/`** — CopilotKit runtime.
+- **`core/static/spa/`** — Generated Vite production build (gitignored; Docker/`npm run build` creates it).
 
 ## Plan a SaaS on this starter
 
@@ -178,7 +239,7 @@ In the product repo, use Cursor Agent skills to turn an MVP idea into reviewable
 
 Planning always emits a **design** plan element. You do not need to invoke `django-saas-starter` or `docs-plans` yourself unless you only need the starter map or are updating an existing plan outside a product kickoff.
 
-**Which mode?** Use **Agent mode**. Skills must write `docs/plans/` and templates. Ask mode cannot write; Cursor Plan mode is for Cursor’s own plan UI, not this workflow. After plans are **Pending Review**, approve them, then design/implement in Agent mode.
+**Which mode?** Use **Agent mode**. Skills must write `docs/plans/` (design/implement touches the React SPA, not Django product templates). Ask mode cannot write; Cursor Plan mode is for Cursor’s own plan UI, not this workflow. After plans are **Pending Review**, approve them, then design/implement in Agent mode.
 
 1. Switch to **Agent mode**, then run **`/new-saas-app`** or **`/plan-saas-from-starter`**.
 2. The agent loads [`.cursor/skills/django-saas-starter/`](./.cursor/skills/django-saas-starter/) and writes plans under [`docs/plans/`](./docs/plans/) via vendored [`docs-plans`](./.cursor/skills/docs-plans/) (tracker: [`docs/plans/PLANS.md`](./docs/plans/PLANS.md)).
@@ -192,12 +253,13 @@ Planning always emits a **design** plan element. You do not need to invoke `djan
 | `plan-saas-from-starter` | [`.cursor/skills/plan-saas-from-starter/`](./.cursor/skills/plan-saas-from-starter/) | Interview + emit plans (always includes design) |
 | `design-with-hallmark` | [`.cursor/skills/design-with-hallmark/`](./.cursor/skills/design-with-hallmark/) | Hallmark marketing + light shell theme |
 | `django-saas-starter` | [`.cursor/skills/django-saas-starter/`](./.cursor/skills/django-saas-starter/) | Starter capability map |
+| `copilotkit-agno` | [`.cursor/skills/copilotkit-agno/`](./.cursor/skills/copilotkit-agno/) | CopilotKit v2 + Agno on this starter |
 | `docs-plans` | [`.cursor/skills/docs-plans/`](./.cursor/skills/docs-plans/) | Plan file format + `PLANS.md` tracker |
 | `hallmark` | [`.cursor/skills/hallmark/`](./.cursor/skills/hallmark/) | Vendored anti-slop design skill |
 
-Shared refs: [`.cursor/skills/references/`](./.cursor/skills/references/). Starter map: [starter-map.md](./.cursor/skills/django-saas-starter/starter-map.md).
+Shared refs: [pack.md](./.cursor/skills/references/pack.md) (required order + hard no), [kickoff-checklist](./.cursor/skills/references/kickoff-checklist.md), [ui-surface-map](./.cursor/skills/references/ui-surface-map.md), [plan-template](./.cursor/skills/references/plan-template.md). Starter map: [starter-map.md](./.cursor/skills/django-saas-starter/starter-map.md). Always-apply rule: [`.cursor/rules/saas-skill-pack.mdc`](./.cursor/rules/saas-skill-pack.mdc).
 
-To refresh Hallmark later: `npx skills add nutlope/hallmark -y --copy` then copy into `.cursor/skills/hallmark/` (see `skills-lock.json`).
+To refresh Hallmark later: `npx skills add nutlope/hallmark -y --copy` then copy into `.cursor/skills/hallmark/` (see `skills-lock.json`). Re-apply [THIS-REPO.md](./.cursor/skills/hallmark/THIS-REPO.md) and the cookiecutter banner at the top of Hallmark’s `SKILL.md` if the refresh wiped them.
 
 ## Docs
 
@@ -206,7 +268,7 @@ Step-by-step guides live in [`docs/`](./docs/):
 - Getting started: [`docs/getting-started.md`](./docs/getting-started.md)
 - Stripe setup: [`docs/stripe.md`](./docs/stripe.md)
 - Deploy on Render: [`docs/deploy-render.md`](./docs/deploy-render.md)
-- CopilotKit + Agno (bolt-on): [`docs/copilotkit-bolton.md`](./docs/copilotkit-bolton.md)
+- CopilotKit + Agno: [`docs/copilotkit.md`](./docs/copilotkit.md)
 - Work plans tracker: [`docs/plans/PLANS.md`](./docs/plans/PLANS.md)
 
 ## URLs
@@ -226,7 +288,7 @@ Step-by-step guides live in [`docs/`](./docs/):
 
 ## Settings
 
-- **`SITE_NAME`** — Branding text used in templates (default: `Acme AI`).
+- **`SITE_NAME`** — Branding in the SPA (via `/api/config/`) and any remaining Django templates (default: `SaaS Starter`). Set in `core/.env`.
 - **`LOGOUT_REDIRECT_URL`** — `'home'`.
 - **`ACCOUNT_LOGIN_METHODS`** — `{'email'}`.
 - **`SOCIALACCOUNT_PROVIDERS`** — Google provider enabled.

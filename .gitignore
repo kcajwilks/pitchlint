@@ -77,6 +77,10 @@ dist/
 dist-ssr/
 *.tsbuildinfo
 .vercel
+# Vite emits the SPA here (`frontend/vite.config.ts` outDir). Docker rebuilds it.
+core/static/spa/
+# Retired CopilotKit widget build; keep ignored so it is not re-committed.
+core/static/frontend/
 
 # IDEs / editors
 .idea/
@@ -107,3 +111,4 @@ temp/
 # Local / agent runtime
 tmp/
 *.pem
+.hallmark/

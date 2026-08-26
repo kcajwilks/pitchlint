@@ -11,13 +11,16 @@ description: >
 
 # Plan SaaS From Starter
 
+**Stack:** Django + DRF + Vite + React. Map the product onto this starter; never plan a FastAPI or Next.js rewrite.
+
 Turn a product idea into reviewable `docs/plans/` entries mapped onto the Django SaaS cookiecutter.
 
 ## Before you start
 
-1. Announce: you are using `plan-saas-from-starter`, and plan files will follow `docs-plans`.
+1. Announce: you are using `plan-saas-from-starter`. Follow [pack.md](../references/pack.md).
 2. Read and follow the vendored `docs-plans` skill (`.cursor/skills/docs-plans/`) for all plan I/O. Do not invent a parallel planning format. See also `.cursor/skills/references/plan-template.md`.
-3. Load the project skill `django-saas-starter` if present (`.cursor/skills/django-saas-starter/`). Read `starter-map.md` when you need concrete paths. If the project skill is missing, briefly inventory `core/*/apps.py` and top-level urls instead.
+3. Load `django-saas-starter` (`.cursor/skills/django-saas-starter/`). Read `starter-map.md` when you need concrete paths. If the project skill is missing, briefly inventory `core/*/apps.py` and top-level urls instead.
+4. If the MVP includes chat or structured AI, cite `copilotkit-agno` in that element’s Findings — Django runtime + CopilotKit in the existing SPA.
 
 ## Interview
 
@@ -66,8 +69,8 @@ Keep every docs-plans required heading. Interpret them for greenfield SaaS featu
 - Prefer **extend** `workspace` (or rename the domain) over a parallel CRUD shell
 - New bounded context → **new app** under `core/`
 - Paid features → billing permissions / `has_active_subscription`; do not reinvent Stripe
-- Chat UI → CopilotKit path; structured AI jobs → Agno + `output_schema`
-- App shell → Django templates; `frontend/` only for the embedded Copilot Vite bundle
+- Chat UI → CopilotKit path; structured AI jobs → Agno + `output_schema` (implement via `.cursor/skills/copilotkit-agno/`)
+- App shell → React SPA in `frontend/`; do not reintroduce product Django templates
 - Marketing look → `/design-with-hallmark` after approval (not ad hoc CSS in domain plans)
 
 ## Done criteria
@@ -75,4 +78,8 @@ Keep every docs-plans required heading. Interpret them for greenfield SaaS featu
 - Interview complete for MVP elements
 - One plan file per element including **design** + `PLANS.md` updated
 - All new plans at Pending Review
-- No implementation started
+- No implementation started (handoff: `/design-with-hallmark` after approval, then `django-saas-starter` / `copilotkit-agno`)
+
+## Related
+
+[pack.md](../references/pack.md) · [`new-saas-app`](../new-saas-app/SKILL.md) · [`docs-plans`](../docs-plans/SKILL.md) · [`django-saas-starter`](../django-saas-starter/SKILL.md) · [`design-with-hallmark`](../design-with-hallmark/SKILL.md) · [`copilotkit-agno`](../copilotkit-agno/SKILL.md)

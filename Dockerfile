@@ -18,7 +18,7 @@ COPY core/requirements.txt /app/core/requirements.txt
 RUN pip install --no-cache-dir -r /app/core/requirements.txt
 
 COPY core /app/core
-COPY --from=frontend /core/static/frontend /app/core/static/frontend
+COPY --from=frontend /core/static/spa /app/core/static/spa
 
 # Build-time collectstatic (safe defaults for build)
 ENV DJANGO_DEBUG=0 \

@@ -1,24 +1,17 @@
 import os
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional
 
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
-from pydantic import BaseModel, Field
 
-
-class ProposedAction(BaseModel):
-    action: str = Field(..., description="Action name (create_project, update_project_name, update_project_description)")
-    summary: str = Field(..., description="One-line description of what will change")
-    params: dict[str, Any] = Field(default_factory=dict, description="Action parameters")
-
-
-class CopilotReply(BaseModel):
-    message: str = Field(..., description="Assistant response to show the user")
-    proposed_actions: list[ProposedAction] = Field(
-        default_factory=list,
-        description="Actions to propose for user confirmation. Do not assume execution.",
-    )
+from .tools import (
+    create_project,
+    generate_project_ai_brief,
+    get_project,
+    list_projects,
+    update_project,
+)
 
 
 @dataclass(frozen=True)
@@ -28,8 +21,24 @@ class _AgentBundle:
 
 _BUNDLE: Optional[_AgentBundle] = None
 
+_INSTRUCTIONS = """You are the in-app product copilot for this SaaS (think Lovable / Cursor chat).
+You help the signed-in user build and manage their Workspace by taking action, not by lecturing.
+
+Style:
+- Be concise and product-oriented.
+- Prefer calling tools over telling the user which buttons to click.
+- After mutations, say what changed and the project id.
+- If context includes a current project id or route, use it unless the user asks about something else.
+- Never invent project ids; list or look them up first when unsure.
+- You cannot delete projects, change billing, or access other users' data.
+
+Tools:
+- list_projects, get_project, create_project, update_project, generate_project_ai_brief
+"""
+
 
 def get_copilot_agent() -> Agent:
+    """Create once and reuse (do not construct inside request loops)."""
     global _BUNDLE
     if _BUNDLE is not None:
         return _BUNDLE.agent
@@ -37,17 +46,15 @@ def get_copilot_agent() -> Agent:
     model_id = os.getenv("AGNO_MODEL_ID", "gpt-4o")
     agent = Agent(
         model=OpenAIChat(id=model_id),
-        instructions=(
-            "You are a product copilot inside a Django SaaS app.\n"
-            "You help the user manage a Workspace project.\n\n"
-            "Rules:\n"
-            "- You may propose actions, but never claim you executed them.\n"
-            "- Only propose these actions: create_project, update_project_name, update_project_description.\n"
-            "- Keep proposed action params minimal and explicit.\n"
-            "- If the user asks to delete or do anything outside the allowed actions, explain it's not supported.\n"
-        ),
-        output_schema=CopilotReply,
-        markdown=False,
+        instructions=_INSTRUCTIONS,
+        tools=[
+            list_projects,
+            get_project,
+            create_project,
+            update_project,
+            generate_project_ai_brief,
+        ],
+        markdown=True,
     )
     _BUNDLE = _AgentBundle(agent=agent)
     return agent
@@ -55,4 +62,3 @@ def get_copilot_agent() -> Agent:
 
 def get_copilot_model_id() -> str:
     return os.getenv("AGNO_MODEL_ID", "gpt-4o")
-

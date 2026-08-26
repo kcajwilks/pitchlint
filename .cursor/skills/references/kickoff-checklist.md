@@ -1,6 +1,6 @@
 # Kickoff checklist (new app from this starter)
 
-Use with `/new-saas-app` or follow manually in **Agent mode**.
+Pack: [pack.md](pack.md). Stack is **Django + Vite + React**. Use with `/new-saas-app` or follow manually in **Agent mode**. Do not run Hallmark until plans are **Approved**.
 
 ## 1. Clone and remote
 

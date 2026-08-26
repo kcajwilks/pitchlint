@@ -1,1 +1,0 @@
-import{r as e}from"../copilot.js";export{e as Mermaid};

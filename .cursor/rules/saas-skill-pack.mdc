@@ -1,0 +1,13 @@
+---
+description: Route all agent work through this cookiecutter’s skill pack (no off-stack, no skipped approval).
+alwaysApply: true
+---
+
+# SaaS skill pack
+
+**Stack is always Django + DRF (`core/`) + Vite + React (`frontend/`).** Never FastAPI, Next.js, or a second frontend.
+
+Before planning, designing, or implementing, follow [`.cursor/skills/references/pack.md`](../skills/references/pack.md).
+
+- Greenfield: `/new-saas-app`. Plan only: `/plan-saas-from-starter`. Design: `/design-with-hallmark` after **Approved** plans. AI/chat: `copilotkit-agno` (Django runtime, CopilotKit in the existing SPA).
+- Do **not** follow vendored Hallmark in isolation — it may fire on “build a new app”. In this repo it only runs through `design-with-hallmark` and [`.cursor/skills/references/ui-surface-map.md`](../skills/references/ui-surface-map.md).
