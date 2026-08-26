@@ -9,7 +9,7 @@ description: >
 
 # Django SaaS Starter
 
-Project reference for this cookiecutter. For product kickoff planning, also use `plan-saas-from-starter`. All work plans go through `docs-plans` under `docs/plans/`.
+Project reference for this cookiecutter. Greenfield ASAP: `/new-saas-app`. Planning: `/plan-saas-from-starter`. Design after approval: `/design-with-hallmark`. All work plans go through vendored `docs-plans` under `docs/plans/`.
 
 ## Already provided
 

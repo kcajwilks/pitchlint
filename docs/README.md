@@ -9,7 +9,7 @@ This folder contains practical, step-by-step setup guides for this Django SaaS s
 - **CopilotKit + Agno**: [`copilotkit.md`](./copilotkit.md)
 - **CopilotKit + Agno (bolt-on, standard)**: [`copilotkit-bolton.md`](./copilotkit-bolton.md)
 - **Deploy on Render**: [`deploy-render.md`](./deploy-render.md)
-- **Work plans**: [`plans/PLANS.md`](./plans/PLANS.md) (use `/plan-saas-from-starter` + `docs-plans`; skills in `.cursor/skills/`)
+- **Work plans**: [`plans/PLANS.md`](./plans/PLANS.md) (Agent mode: `/new-saas-app` or `/plan-saas-from-starter` → approve → `/design-with-hallmark`; pack in `.cursor/skills/`)
 
 ## Useful project links
 

@@ -17,20 +17,68 @@ A virtual environment is recommended.
 
 ## Start a new project from this starter
 
-Create an empty GitHub repo for your app first (example: `my-saas-app`), then clone this starter and retarget the remote:
+This repo is the **template**. Do **not** plan or build a product MVP inside `django-cookiecutter`. Clone into a **new directory**, open that folder in Cursor, then run the skills there.
+
+### 1. Create the new repo location
+
+Create an empty GitHub repo for your app first (example: `ai-api-explorer`), then:
 
 ```bash
-git clone git@github.com:kcajwilks/django-cookiecutter.git my-saas-app
-cd my-saas-app
+# Ensure this starter (including .cursor/skills/) is pushed to GitHub first
+
+git clone git@github.com:kcajwilks/django-cookiecutter.git ai-api-explorer
+cd ai-api-explorer
 git remote remove origin
-git remote add origin git@github.com:kcajwilks/my-saas-app.git
+git remote add origin git@github.com:kcajwilks/ai-api-explorer.git
 git branch -M main
 git push -u origin main
 ```
 
-Replace `my-saas-app` (directory and remote) with your project name. Do not copy `core/.env` from another machine — use `cp core/.env.example core/.env` and fill in new secrets.
+Replace `ai-api-explorer` with your project name. Open **that** folder in Cursor (new window), not this cookiecutter folder.
 
-Then continue with Quick start or Docker below.
+### 2. Environment
+
+```bash
+cp core/.env.example core/.env
+```
+
+Fill in new secrets (`DJANGO_SECRET_KEY`, `OPENAI_API_KEY` if you need AI, Stripe only if billing matters for MVP). **Do not** copy `core/.env` from the cookiecutter or another app.
+
+Optional before planning: Quick start / Docker below so the starter runs. Planning does not require a live server.
+
+### 3. Plan with skills (Agent mode)
+
+| | |
+|--|--|
+| **Where** | The **new** project folder only |
+| **Mode** | **Agent** |
+| **Skill** | **`/new-saas-app`** (greenfield) |
+
+Paste your MVP brief into that chat (problem, user flow, MVP features, boundaries).
+
+Alternative (step-by-step): `/plan-saas-from-starter` only, then `/design-with-hallmark` after you approve plans.
+
+What the agent should do:
+
+1. Interview you (one question at a time) and map features onto this starter (auth, billing, workspace, CopilotKit/Agno).
+2. Write **one plan per element** under `docs/plans/` + update `PLANS.md`, always including **`marketing-shell-design`**.
+3. Stop at **Pending Review** — you approve; the agent must not implement yet.
+
+### 4. After you approve
+
+Still in **Agent** in the new project:
+
+1. `/design-with-hallmark` (recommend **build** unless you have a reference URL/screenshot).
+2. Implement remaining approved domain plans one at a time.
+
+### Do not
+
+- Run `/new-saas-app` or product planning inside `django-cookiecutter`
+- Copy `core/.env` between apps
+- Skip approval and jump to coding
+- Ask Hallmark to redesign the whole authenticated shell (marketing + light shell tint only — see [ui-surface-map](./.cursor/skills/references/ui-surface-map.md))
+
+Then continue with Quick start or Docker below if you have not already.
 
 ## Quick start
 
@@ -119,20 +167,37 @@ python3 manage.py seed_plans
 
 ## Plan a SaaS on this starter
 
-Use Cursor Agent skills to turn a product idea into reviewable work plans mapped onto this cookiecutter (auth, billing, workspace, CopilotKit/Agno).
+For a **new product**, follow [Start a new project from this starter](#start-a-new-project-from-this-starter) first (clone to a new directory, then run skills there).
 
-1. In Agent chat, run **`/plan-saas-from-starter`** (interview → map elements → write plans).
-2. The agent loads [`.cursor/skills/django-saas-starter/`](./.cursor/skills/django-saas-starter/) for what the starter already ships.
-3. Plans are written under [`docs/plans/`](./docs/plans/) using the `docs-plans` standard (one file per application element + tracker [`docs/plans/PLANS.md`](./docs/plans/PLANS.md)).
-4. New plans land at **Pending Review** — approve before implementation.
+In the product repo, use Cursor Agent skills to turn an MVP idea into reviewable work plans mapped onto this cookiecutter (auth, billing, workspace, CopilotKit/Agno), then Hallmark for marketing + light shell theming.
+
+**Which skill?**
+- **Greenfield ASAP:** `/new-saas-app` (checklist → plan → pause for approval → design → implement handoff).
+- **Plan only / mid-project:** `/plan-saas-from-starter`.
+- **Design only (after approval):** `/design-with-hallmark`.
+
+Planning always emits a **design** plan element. You do not need to invoke `django-saas-starter` or `docs-plans` yourself unless you only need the starter map or are updating an existing plan outside a product kickoff.
+
+**Which mode?** Use **Agent mode**. Skills must write `docs/plans/` and templates. Ask mode cannot write; Cursor Plan mode is for Cursor’s own plan UI, not this workflow. After plans are **Pending Review**, approve them, then design/implement in Agent mode.
+
+1. Switch to **Agent mode**, then run **`/new-saas-app`** or **`/plan-saas-from-starter`**.
+2. The agent loads [`.cursor/skills/django-saas-starter/`](./.cursor/skills/django-saas-starter/) and writes plans under [`docs/plans/`](./docs/plans/) via vendored [`docs-plans`](./.cursor/skills/docs-plans/) (tracker: [`docs/plans/PLANS.md`](./docs/plans/PLANS.md)).
+3. Approve plans (including `marketing-shell-design`).
+4. Run **`/design-with-hallmark`** (vendored [Hallmark](https://github.com/nutlope/hallmark); marketing + shell tint only — see [ui-surface-map](./.cursor/skills/references/ui-surface-map.md)).
+5. Implement remaining approved domain plans.
 
 | Skill | Where | Role |
 |-------|--------|------|
-| `plan-saas-from-starter` | [`.cursor/skills/plan-saas-from-starter/`](./.cursor/skills/plan-saas-from-starter/) | Interview + emit plans |
+| `new-saas-app` | [`.cursor/skills/new-saas-app/`](./.cursor/skills/new-saas-app/) | Meta kickoff (use for new apps) |
+| `plan-saas-from-starter` | [`.cursor/skills/plan-saas-from-starter/`](./.cursor/skills/plan-saas-from-starter/) | Interview + emit plans (always includes design) |
+| `design-with-hallmark` | [`.cursor/skills/design-with-hallmark/`](./.cursor/skills/design-with-hallmark/) | Hallmark marketing + light shell theme |
 | `django-saas-starter` | [`.cursor/skills/django-saas-starter/`](./.cursor/skills/django-saas-starter/) | Starter capability map |
-| `docs-plans` | Personal skill set | Plan file format + `PLANS.md` tracker |
+| `docs-plans` | [`.cursor/skills/docs-plans/`](./.cursor/skills/docs-plans/) | Plan file format + `PLANS.md` tracker |
+| `hallmark` | [`.cursor/skills/hallmark/`](./.cursor/skills/hallmark/) | Vendored anti-slop design skill |
 
-Starter map details: [`.cursor/skills/django-saas-starter/starter-map.md`](./.cursor/skills/django-saas-starter/starter-map.md).
+Shared refs: [`.cursor/skills/references/`](./.cursor/skills/references/). Starter map: [starter-map.md](./.cursor/skills/django-saas-starter/starter-map.md).
+
+To refresh Hallmark later: `npx skills add nutlope/hallmark -y --copy` then copy into `.cursor/skills/hallmark/` (see `skills-lock.json`).
 
 ## Docs
 
